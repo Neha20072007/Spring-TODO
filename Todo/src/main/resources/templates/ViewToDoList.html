@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="ISO-8859-1">
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+    <title>View My Todos🎟️</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <style>
+
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .navbar-brand img:hover {
+            transform: rotate(360deg);
+        }
+
+        body {
+            background-color: #fce4ec; /* Light pink background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .header-image img {
+            max-width: 100px;
+        }
+
+        h1 {
+            color: #FB4570; /* Deep pink color */
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        table {
+            margin-top: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #FB4570; /* Pink header */
+            color: white;
+        }
+
+        td {
+            background-color: #f5c5d6; /* Light pink rows */
+            color: #000001; 
+        }
+
+        .btn {
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        .btn a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-outline-success {
+            border-color: #3ee347;
+            background-color: #7eeb83;
+            color: white;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #28eb32;
+            color: white;
+        }
+
+        .btn-outline-warning {
+            border-color: #fbc02d;
+            background-color: #fff176;
+            color: white;
+        }
+
+        .btn-outline-warning:hover {
+            background-color: #fbc02d;
+            color: white;
+        }
+
+        .btn-outline-danger {
+            border-color: #e45353;
+            background-color: #e67371;
+            color: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #e22828;
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: #FB4570;
+            background-color: #FB6B90;
+            color: white;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #f22458;
+            color: white;
+        }
+
+        .container {
+            padding: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/viewToDoList}">
+        <img th:src="@{/assets/a.svg}" alt="Home" class="img-fluid">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Log Out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<body>
+
+    <div class="container">
+        <h1>My Todos🎟️</h1>
+
+        <form th:action="@{/saveToDoItem}" method="post">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Task</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Goal Achieved?</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="todo : ${list}">
+                        <td th:text="${todo.id}"></td>
+                        <td th:text="${todo.title}"></td>
+                        <td th:text="${todo.date}"></td>
+                        <td th:text="${todo.status}"></td>
+                        <td>
+                            <button type="button" class="btn btn-outline-success btn-block">
+                                <a th:href="@{/updateToDoStatus/{id}(id=${todo.id})}">✅Done</a>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-warning btn-block">
+                                <a th:href="@{/editToDoItem/{id}(id=${todo.id})}">✏️Edit</a>
+                            </button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-danger btn-block">
+                                <a th:href="@{/deleteToDoItem/{id}(id=${todo.id})}">🗑️Delete</a>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+
+        <button type="button" class="btn btn-outline-primary btn-block">
+            <a th:href="@{/addToDoItem}">Add ToDo</a>
+        </button>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        window.onload = function () {
+            var msg = /*[[${message}]]*/ '';
+
+            if (msg === "Save Success") {
+                toastr["success"]("Item added successfully!!")
+            } else if (msg === "Delete Success") {
+                toastr["success"]("Item deleted successfully!!")
+            } else if (msg === "Delete Failure") {
+                toastr["error"]("Some error occurred, couldn't delete item")
+            } else if (msg === "Edit Success") {
+                toastr["success"]("Item updated successfully!!")
+            }
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+        }
+        /*]]>*/
+    </script>
+
+</body>
+
+</html>

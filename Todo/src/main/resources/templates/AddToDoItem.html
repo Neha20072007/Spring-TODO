@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+    <title>Add ToDos📝</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <style>
+
+        .navbar-brand img {
+            width: 40px;
+            height: 40px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .navbar-brand img:hover {
+            transform: rotate(360deg);
+        }
+
+        body {
+            background-color: #fce4ec; /* Light pink background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .header-image img {
+            max-width: 100px;
+        }
+
+        body {
+            background-color: #fce4ec; /* Light pink background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 30px;
+            margin-top: 50px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #FB4570; /* Deep pink color */
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        label {
+            color: #06000e; /* Dark purple text */
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border-color: #ec407a; /* Pink border */
+            background-color: #f8bbd0; /* Light pink background */
+            color: #020005; /* Dark purple text */
+        }
+
+        .form-control:focus {
+            border-color: #ad1457; /* Deep pink border on focus */
+            box-shadow: 0 0 5px rgba(173, 20, 87, 0.5);
+        }
+
+        .btn-success {
+            background-color: #FB4570;
+            border-color: #f36284;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #22e22b;
+            border-color: #39e642;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{/viewToDoList}">
+        <img th:src="@{/assets/a.svg}" alt="Home" class="img-fluid">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/logout}">Log Out</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>Add ToDos📝</h1>
+
+    <form th:action="@{/saveToDoItem}" th:object="${todo}" method="post">
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="title">Task</label>
+            <div class="col-md-9">
+                <input type="text" th:field="*{title}" id="title" class="form-control" required="required"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="date">Date</label>
+            <div class="col-md-9">
+                <input type="date" th:field="*{date}" id="date" class="form-control" required="required"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="status">Status</label>
+            <div class="col-md-9">
+                <input type="text" th:field="*{status}" id="status" class="form-control" value="Incomplete"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-12 text-center">
+                <button type="submit" value="Register" class="btn btn-success">Add</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    window.onload = function () {
+        var msg = /*[[${message}]]*/ 'default message';
+        console.log(msg);
+        if (msg === "Save Failure") {
+            toastr.error("Something went wrong with the save.");
+        }
+
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    }
+    /*]]>*/
+</script>
+
+</body>
+</html>
